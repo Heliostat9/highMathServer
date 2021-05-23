@@ -2,13 +2,46 @@ var express = require('express');
 const mongoose = require('mongoose');
 var router = express.Router();
 
+const multer = require('multer');
+const path = require('path');
 var Content = require('../models/Content');
 var User = require('../models/User');
+
 
 /* GET home page. */
 router.get('/', async function(req, res, next) {
     const result = await Content.find({});
     return res.json(result);
+});
+
+router.post('/content', async (req, res) => {
+  
+  await multer({storage: multer.diskStorage({
+    destination: function(req, file, cb) {
+      
+        cb(null, 'doc/');
+    },
+  
+    // By default, multer removes file extensions so let's add them back
+    filename: function(req, file, cb) {
+      let {title, desc, category, type, img} = req.body;
+  console.log(file);
+  
+  let filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname);
+  
+      const content = new Content({
+        title: title,
+        desc: desc,
+        category: category,
+        type: type,
+        url: filename,
+        imgSrc: img 
+      });
+      console.log(content);
+        cb(null, filename);
+    }
+  })}).single('file');
+  return res.send('sdf');
 });
 
 router.post('/auth/login', async (req, res) => {
