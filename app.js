@@ -17,7 +17,7 @@ app.use(multer({storage: multer.diskStorage({
     // By default, multer removes file extensions so let's add them back
     filename: function(req, file, cb) {
       let {title, desc, category, type, img} = req.body;
-  console.log(file);
+ 
   
   let filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname);
   
@@ -29,8 +29,12 @@ app.use(multer({storage: multer.diskStorage({
         url: filename,
         imgSrc: img 
       });
-      content.save();
+      console.log('----');
+      content.save(err => {
+        console.log(err);
+      });
       console.log(content);
+      console.log('----');
         cb(null, filename);
     }
   })}).single('file'));

@@ -8,6 +8,7 @@ const contentScheme = new Schema({
     url: String,
     imgSrc: String,
     tests: Array,
+    name: String,
     type: String
 });
 

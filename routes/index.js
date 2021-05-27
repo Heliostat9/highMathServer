@@ -14,34 +14,37 @@ router.get('/', async function(req, res, next) {
     return res.json(result);
 });
 
+router.post('/test', async (req, res) => {
+  let count = 0;
+  console.log(req.body);
+  req.body.tests.map((item, index) => {
+    if(item.good == req.body.answer[index]) {
+      count++;
+    } 
+  })
+  console.log(count);
+  res.json(count);
+  
+})
+
 router.post('/content', async (req, res) => {
+  console.log(req.body);  
+  if(req.body.type == 'Тест') {
+    const content = Content({
+      title: req.body.title,
+      desc: req.body.desc,
+      category: req.body.category,
+      type: req.body.type,
+      imgSrc: req.body.img,
+      name: req.body.name,
+      tests: JSON.parse(req.body.tests)
+    });
+    content.save(err => {
+      console.log(err);
+    });
+  } 
   
-  await multer({storage: multer.diskStorage({
-    destination: function(req, file, cb) {
-      
-        cb(null, 'doc/');
-    },
-  
-    // By default, multer removes file extensions so let's add them back
-    filename: function(req, file, cb) {
-      let {title, desc, category, type, img} = req.body;
-  console.log(file);
-  
-  let filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname);
-  
-      const content = new Content({
-        title: title,
-        desc: desc,
-        category: category,
-        type: type,
-        url: filename,
-        imgSrc: img 
-      });
-      console.log(content);
-        cb(null, filename);
-    }
-  })}).single('file');
-  return res.send('sdf');
+  return res.send('');
 });
 
 router.post('/auth/login', async (req, res) => {
