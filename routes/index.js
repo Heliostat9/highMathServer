@@ -11,6 +11,8 @@ var User = require('../models/User');
 /* GET home page. */
 router.get('/', async function(req, res, next) {
     const result = await Content.find({});
+    console.log(result);
+    res.set('Access-Control-Allow-Origin', '*')
     return res.json(result);
 });
 
@@ -123,8 +125,10 @@ router.post('/', async function(req, res) {
   objecter.save();
   return res.json(objecter);
 })
-router.delete('/:id', async function(req, res) {
+router.get('/del/:id', async function(req, res) {
+  res.set('Access-Control-Allow-Origin', '*');
   const result = await Content.remove({_id: mongoose.Types.ObjectId(req.params.id)});
+  
   return res.json(result);
 })
 
